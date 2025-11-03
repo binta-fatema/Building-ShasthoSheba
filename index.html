@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Companion App - মানসিক স্বাস্থ্য সহায়তা</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- সাধারণ স্টাইল --- */
+        :root {
+            --primary-color: #4a7c7e;
+            --secondary-color: #a8dadc;
+            --accent-color: #f1faee;
+            --text-color: #1d3557;
+            --light-bg: #e8f4f8;
+            --danger-color: #e63946;
+            --success-color: #52b788;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- হেডার ও নেভিগেশন --- */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            padding: 0.7rem 1rem;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'Hind Siliguri', sans-serif;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: #3a6264;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background-color: var(--text-color);
+        }
+
+        /* --- মেইন কন্টেন্ট --- */
+        main {
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active-screen {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* --- ফিচার স্পেসিফিক স্টাইল --- */
+
+        /* ১) কেমন অনুভব করছেন */
+        .mood-selector {
+            display: flex;
+            justify-content: space-around;
+            font-size: 3rem;
+            margin: 2rem 0;
+        }
+        .mood-btn {
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: none;
+            background: none;
+        }
+        .mood-btn:hover {
+            transform: scale(1.2);
+        }
+        .stress-level {
+            margin-top: 1.5rem;
+        }
+        .stress-level input[type="range"] {
+            width: 100%;
+        }
+        #stress-value {
+            font-weight: bold;
+            color: var(--danger-color);
+        }
+
+        /* ২) স্বাস্থ্য সেবার ঠিকানা  */
+        #map-placeholder {
+            width: 100%;
+            height: 400px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 1.2rem;
+            background-image: url('https://picsum.photos/seed/healthmap/800/400.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-radius: 10px;
+        }
+
+        /* ৩) হেল্প লাইন */
+        .help-form textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            min-height: 150px;
+            font-family: 'Hind Siliguri', sans-serif;
+            resize: vertical;
+        }
+        .help-form button {
+            margin-top: 1rem;
+            padding: 0.8rem 2rem;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        .help-form button:hover {
+            background-color: #d62828;
+        }
+
+        /* ৪) সুস্থ থাকার টিপস   */
+        .tip-card {
+            background-color: var(--accent-color);
+            border-left: 5px solid var(--secondary-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            transition: transform 0.3s;
+        }
+        .tip-card:hover {
+            transform: translateX(5px);
+        }
+
+        /* ৫) মা ও শিশু সুরক্ষা  */
+        .tracker-item {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            transition: box-shadow 0.3s;
+        }
+        .tracker-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* ৬) লক্ষণ গাইড */
+        .symptom-item {
+            cursor: pointer;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+        .symptom-item:hover {
+            background-color: var(--light-bg);
+        }
+        .symptom-details {
+            display: none;
+            padding-left: 2rem;
+            margin-top: 0.5rem;
+            color: #555;
+        }
+        .symptom-item h4 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .symptom-item h4 i {
+            transition: transform 0.3s;
+        }
+        .symptom-item.expanded h4 i {
+            transform: rotate(180deg);
+        }
+
+        /* ৮) ভলান্টিয়ার ডিরেক্টরি */
+        .volunteer-list {
+            list-style: none;
+        }
+        .volunteer-card {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.3s;
+        }
+        .volunteer-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .volunteer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* ১০) কথ্য অ্যাসিস্ট্যান্ট */
+        #voice-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        #voice-btn:hover {
+            background-color: var(--text-color);
+        }
+        #voice-btn.listening {
+            background-color: var(--danger-color);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(230, 57, 70, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
+        }
+        #voice-result {
+            min-height: 100px;
+            padding: 1rem;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        /* --- ফুটার --- */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        /* --- অতিরিক্ত স্টাইল --- */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .data-export-form {
+            margin-top: 1rem;
+        }
+        
+        .data-export-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .data-export-form button {
+            margin-top: 1rem;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .data-export-form button:hover {
+            background-color: #3a6264;
+        }
+
+        .event-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+        }
+        
+        .event-card button {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .event-card button:hover {
+            background-color: #3a6264;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>🧠 Mental Health Companion App</h1>
+            <p>আপনার মানসিক স্বাস্থ্যের সহায়তায় আমরা আছি</p>
+        </header>
+
+        <nav>
+            <!-- নেভিগেশন বাটনগুলো data-screen অ্যাট্রিবিউট ব্যবহার করে স্ক্রীনের সাথে যুক্ত -->
+            <button class="nav-btn active" data-screen="home">হোম</button>
+            <button class="nav-btn" data-screen="mood-check-in">মুড চেক-ইন</button>
+            <button class="nav-btn" data-screen="health-map">হেলথ ম্যাপ</button>
+            <button class="nav-btn" data-screen="help-request">সাহায্য চাই</button>
+            <button class="nav-btn" data-screen="health-tips">স্বাস্থ্য টিপস</button>
+            <button class="nav-btn" data-screen="tracker">মা ও শিশু</button>
+            <button class="nav-btn" data-screen="symptom-guide">লক্ষণ সম্পর্কে</button>
+            <button class="nav-btn" data-screen="events">ইভেন্ট</button>
+            <button class="nav-btn" data-screen="volunteers">স্বেচ্ছাসেবক</button>
+            <button class="nav-btn" data-screen="data-export">ডেটা এক্সপোর্ট</button>
+            <button class="nav-btn" data-screen="voice-assistant">ভয়েস অ্যাসিস্ট্যান্ট</button>
+        </nav>
+
+        <main id="main-content">
+            <!-- স্ক্রীন ০: হোম -->
+            <section id="home" class="screen active-screen">
+                <h2>স্বাগতম, ব্যবহারকারী!</h2>
+                <p>আজকে আপনি কেমন অনুভব করছেন? আপনার মানসিক স্বাস্থ্যের যত্ন নেওয়ার জন্য আমাদের অ্যাপটি ব্যবহার করুন। নিচের যেকোনো বিকল্প বেছে নিন আপনার প্রয়োজন অনুযায়ী।</p>
+                <p>আজকের মুড: <strong id="home-mood-display">এখনও জানানো হয়নি</strong></p>
+                <p>আজকের স্ট্রেস লেভেল: <strong id="home-stress-display">এখনও মাপা হয়নি</strong></p>
+                <div class="tip-card">
+                    <h3>আজকের টিপস</h3>
+                    <p id="daily-tip">প্রতিদিন কমপক্ষে ১০ মিনিট ধ্যান করুন। এটি আপনার মানসিক চাপ কমাতে সাহায্য করবে।</p>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ১: মুড অ্যান্ড স্ট্রেস চেক-ইন -->
+            <section id="mood-check-in" class="screen">
+                <h2>আজ আপনি কেমন আছেন?</h2>
+                <div class="mood-selector">
+                    <button class="mood-btn" data-mood="খুব ভালো">😊</button>
+                    <button class="mood-btn" data-mood="ভালো">🙂</button>
+                    <button class="mood-btn" data-mood="সাধারণ">😐</button>
+                    <button class="mood-btn" data-mood="খারাপ">🙁</button>
+                    <button class="mood-btn" data-mood="খুব খারাপ">😢</button>
+                </div>
+                <div class="stress-level">
+                    <h3>আপনার স্ট্রেস লেভেল কতটুকু?</h3>
+                    <input type="range" id="stress-slider" min="0" max="10" value="5">
+                    <p>স্ট্রেস লেভেল: <span id="stress-value">5</span> / 10</p>
+                </div>
+                <div class="tip-card">
+                    <h3>আপনার মুড অনুযায়ী পরামর্শ</h3>
+                    <p id="mood-advice">আপনার মুড নির্বাচন করুন এবং আপনার জন্য ব্যক্তিগতকৃত পরামর্শ পান।</p>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ২: কমিউনিটি হেলথ ম্যাপ -->
+            <section id="health-map" class="screen">
+                <h2>আপনার কাছাকাছি স্বাস্থ্যসেবা</h2>
+                <div id="map-placeholder">
+                    <div class="map-overlay">
+                        <div>
+                            <p>এখানে Google Maps API ব্যবহার করে নিকটবর্তী হাসপাতাল, ক্লিনিক এবং স্বেচ্ছাসেবকদের অবস্থান দেখানো হবে।</p>
+                            <button class="nav-btn" style="margin-top: 1rem;">আমার অবস্থান ব্যবহার করুন</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tip-card">
+                    <h3>নিকটবর্তী স্বাস্থ্যসেবা</h3>
+                    <ul>
+                        <li>ঢাকা মেডিকেল কলেজ হাসপাতাল - ২.৫ কিমি</li>
+                        <li>মানসিক স্বাস্থ্য ইনস্টিটিউট - ৩.৮ কিমি</li>
+                        <li>কমিউনিটি হেলথ সেন্টার - ১.২ কিমি</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ৩: অ্যানোনিমাস হেল্প রিকোয়েস্ট -->
+            <section id="help-request" class="screen">
+                <h2>গোপনীয়তার সাথে সাহায্য চান</h2>
+                <p>আপনার পরিচয় গোপন রেখে আমাদের জানান আপনার সমস্যা। আমরা বা আমাদের সম্প্রদায়ের স্বেচ্ছাসেবকরা আপনাকে সাহায্য করতে চেষ্টা করব।</p>
+                <form class="help-form" id="help-form">
+                    <textarea placeholder="আপনার সমস্যা বা সাহায্যের বিষয়টি এখানে লিখুন..." required></textarea>
+                    <button type="submit">সাহায্যের আবেদন পাঠান</button>
+                </form>
+                <div class="tip-card">
+                    <h3>জরুরি সাহায্য</h3>
+                    <p>যদি আপনি অবিলম্বে সাহায্যের প্রয়োজন মনে করেন, অনুগ্রহ করে নিচের নম্বরে যোগাযোগ করুন:</p>
+                    <p><strong>জরুরি হেল্পলাইন: ১৬২৬৩</strong></p>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ৪: সিজনাল প্রিভেন্টিভ হেলথ টিপস -->
+            <section id="health-tips" class="screen">
+                <h2>ঋতু অনুযায়ী স্বাস্থ্য পরামর্শ</h2>
+                <div class="tip-card">
+                    <h3>গ্রীষ্মকালীন পরামর্শ</h3>
+                    <p>পর্যাপ্ত পানি পান করুন, সূর্যের তীব্র তাপ থেকে বাঁচুন এবং হালকা ও পুষ্টিকর খাবার খান।</p>
+                </div>
+                <div class="tip-card">
+                    <h3>বর্ষাকালীন পরামর্শ</h3>
+                    <p>মশার প্রতিরোধ নিন, পরিষ্কার-পরিচ্ছন্ন থাকুন এবং ভেজা জামাকাপড় পরিধান এড়িয়ে চলুন।</p>
+                </div>
+                <div class="tip-card">
+                    <h3>শীতকালীন পরামর্শ</h3>
+                    <p>গরম কাপড় পরুন, শরীর উষ্ণ রাখুন এবং ভিটামিন-সি সমৃদ্ধ ফলমূল খান রোগ প্রতিরোধ ক্ষমতা বাড়ানোর জন্য।</p>
+                </div>
+                <div class="tip-card">
+                    <h3>বসন্তকালীন পরামর্শ</h3>
+                    <p>এলার্জি থেকে দূরে থাকুন, নিয়মিত ব্যায়াম করুন এবং সতেজ ফল ও সবজি খান।</p>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ৫: মাদার অ্যান্ড চাইল্ড হেলথ ট্র্যাকার -->
+            <section id="tracker" class="screen">
+                <h2>মা ও শিশুর স্বাস্থ্য পর্যবেক্ষণ</h2>
+                <div class="tracker-item">
+                    <h4>গর্ভাবস্থার সপ্তাহ: ২৮</h4>
+                    <p>আপনার পরবর্তী চেকআপ: আগামী রবিবার।</p>
+                </div>
+                <div class="tracker-item">
+                    <h4>শিশুর টিকা: ডিপিটি (৩য় ডোজ)</h4>
+                    <p>নির্ধারিত তারিখ: আগামী ১৫ই অক্টোবর।</p>
+                </div>
+                 <div class="tracker-item">
+                    <h4>শিশুর ওজন: ৬.৫ কেজি</h4>
+                    <p>শিশুর বিকাশ স্বাভাবিক পরিসরে আছে।</p>
+                </div>
+                <div class="tip-card">
+                    <h3>মায়েদের জন্য পরামর্শ</h3>
+                    <p>গর্ভাবস্থায় প্রতিদিন কমপক্ষে ৮ গ্লাস পানি পান করুন এবং পুষ্টিকর খাবার খান। নিয়মিত চেকআপ করাতে ভুলবেন না।</p>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ৬: সিম্পটম অ্যাওয়ারনেস গাইড -->
+            <section id="symptom-guide" class="screen">
+                <h2>লক্ষণ সম্পর্কে জানুন</h2>
+                <div class="symptom-item">
+                    <h4>অতিরিক্ত উদ্বেগ (Anxiety) <i class="fas fa-chevron-down"></i></h4>
+                    <div class="symptom-details">
+                        <p>লক্ষণ: অস্থিরতা, দ্রুত হৃদস্পন্দন, ঘাম হওয়া, ঘুমের সমস্যা। যদি এই লক্ষণগুলো দীর্ঘদিন থাকে, একজন মানসিক স্বাস্থ্য বিশেষজ্ঞের সাথে কথা বলুন।</p>
+                    </div>
+                </div>
+                <div class="symptom-item">
+                    <h4>বিষণ্নতা (Depression) <i class="fas fa-chevron-down"></i></h4>
+                    <div class="symptom-details">
+                        <p>লক্ষণ: দীর্ঘস্থায়ী দুঃখ, আগ্রহ হারিয়ে ফেলা, ক্লান্তি, ওজনের পরিবর্তন। এটি একটি চিকিৎসাযোগ্য রোগ, সাহায্য নিন।</p>
+                    </div>
+                </div>
+                <div class="symptom-item">
+                    <h4>অনিদ্রা (Insomnia) <i class="fas fa-chevron-down"></i></h4>
+                    <div class="symptom-details">
+                        <p>লক্ষণ: ঘুমাতে অসুবিধা, ঘুম ভাঙা, সকালে ক্লান্ত লাগা। নিয়মিত ঘুমের সময় বজায় রাখুন এবং ঘুমানোর আগে ক্যাফেইন এড়িয়ে চলুন।</p>
+                    </div>
+                </div>
+                <div class="symptom-item">
+                    <h4>খাবার ব্যাধি (Eating Disorders) <i class="fas fa-chevron-down"></i></h4>
+                    <div class="symptom-details">
+                        <p>লক্ষণ: অতিরিক্ত খাওয়া বা খাওয়া এড়িয়ে চলা, ওজন নিয়ে অতিরিক্ত চিন্তা। এটি একটি গুরুতর স্বাস্থ্য সমস্যা, চিকিৎসকের সাহায্য নিন।</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ৭: কমিউনিটি হেলথ ইভেন্টস -->
+            <section id="events" class="screen">
+                <h2>আসন্ন স্বাস্থ্য কর্মসূচি</h2>
+                <div class="event-card">
+                    <h3>মানসিক স্বাস্থ্য সচেতনতা কর্মশালা</h3>
+                    <p><strong>তারিখ:</strong> ২৫শে সেপ্টেম্বর, ২০২৩</p>
+                    <p><strong>স্থান:</strong> কমিউনিটি সেন্টার, ধানমন্ডি</p>
+                    <button class="nav-btn">রেজিস্টার করুন</button>
+                </div>
+                <div class="event-card">
+                    <h3>যোগব্যায়াম ও ধ্যান ক্লাস</h3>
+                    <p><strong>তারিখ:</strong> প্রতি শনিবার সকাল ৭টা</p>
+                    <p><strong>স্থান:</strong> রমনা পার্ক</p>
+                    <button class="nav-btn">রেজিস্টার করুন</button>
+                </div>
+                <div class="event-card">
+                    <h3>মা ও শিশু স্বাস্থ্য ক্যাম্প</h3>
+                    <p><strong>তারিখ:</strong> ৫ই অক্টোবর, ২০২৩</p>
+                    <p><strong>স্থান:</strong> ইউনিসেফ কমিউনিটি সেন্টার</p>
+                    <button class="nav-btn">রেজিস্টার করুন</button>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ৮: ভলান্টিয়ার হেলথ ওয়ার্কার ডিরেক্টরি -->
+            <section id="volunteers" class="screen">
+                <h2>আমাদের স্বেচ্ছাসেবকরা</h2>
+                <ul class="volunteer-list">
+                    <li class="volunteer-card">
+                        <div class="volunteer-avatar">👩</div>
+                        <div>
+                            <h4>সারা আহমেদ</h4>
+                            <p>বিশেষত্ব: ট্রমা কাউন্সেলিং</p>
+                            <p>অভিজ্ঞতা: ৫ বছর</p>
+                            <button class="nav-btn">যোগাযোগ করুন</button>
+                        </div>
+                    </li>
+                    <li class="volunteer-card">
+                        <div class="volunteer-avatar">👨</div>
+                        <div>
+                            <h4>রাকিব হাসান</h4>
+                            <p>বিশেষত্ব: যুব মানসিক স্বাস্থ্য</p>
+                            <p>অভিজ্ঞতা: ৩ বছর</p>
+                            <button class="nav-btn">যোগাযোগ করুন</button>
+                        </div>
+                    </li>
+                    <li class="volunteer-card">
+                        <div class="volunteer-avatar">👩</div>
+                        <div>
+                            <h4>ফারজানা ইসলাম</h4>
+                            <p>বিশেষত্ব: মা ও শিশু স্বাস্থ্য</p>
+                            <p>অভিজ্ঞতা: ৭ বছর</p>
+                            <button class="nav-btn">যোগাযোগ করুন</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- স্ক্রীন ৯: হেলথ ডেটা এক্সপোর্ট ফর এনজিওস -->
+            <section id="data-export" class="screen">
+                <h2>এনজিও-দের জন্য ডেটা এক্সপোর্ট</h2>
+                <p>এই বিভাগটি নিবন্ধিত এনজিও এবং গবেষকদের জন্য। তারা বেনামী স্বাস্থ্য ডেটা ডাউনলোড করে গবেষণা ও পরিকল্পনার কাজে ব্যবহার করতে পারবে।</p>
+                <form class="data-export-form">
+                    <label><input type="checkbox" name="mood-data"> মুড ডেটা (বেনামী)</label><br>
+                    <label><input type="checkbox" name="stress-data"> স্ট্রেস লেভেল ডেটা (বেনামী)</label><br>
+                    <label><input type="checkbox" name="help-requests"> সাহায্যের আবেদন (বেনামী)</label><br>
+                    <button type="button" id="export-btn">CSV ফাইল হিসেবে ডাউনলোড করুন</button>
+                </form>
+                <div class="tip-card">
+                    <h3>ডেটা ব্যবহারের নীতিমালা</h3>
+                    <p>ডাউনলোড করা ডেটা শুধুমাত্র গবেষণা এবং স্বাস্থ্য পরিকল্পনার কাজে ব্যবহার করা যাবে। কোনো ব্যক্তিগত তথ্য প্রকাশ করা যাবে না।</p>
+                </div>
+            </section>
+
+            <!-- স্ক্রীন ১০: ভয়েস-ফার্স্ট হেলথ অ্যাসিস্ট্যান্ট -->
+            <section id="voice-assistant" class="screen">
+                <h2>আপনার কথ্য সহকারী</h2>
+                <p>মাইক্রোফোন বোতামে চাপ দিয়ে আপনার প্রশ্নটি বলুন।</p>
+                <button id="voice-btn">🎤</button>
+                <div id="voice-result">
+                    <p>আপনার কথ্য প্রশ্নের উত্তর এখানে দেখানো হবে...</p>
+                </div>
+                <div class="tip-card">
+                    <h3>প্রশ্নের উদাহরণ</h3>
+                    <ul>
+                        <li>"আমি কিভাবে আমার স্ট্রেস কমাতে পারি?"</li>
+                        <li>"অনিদ্রার জন্য কি করণীয়?"</li>
+                        <li>"গর্ভাবস্থায় মানসিক স্বাস্থ্যের যত্ন কিভাবে নেব?"</li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <p>&copy; ২০২৩ Mental Health Companion App. সর্বস্বত্ব সংরক্ষিত।</p>
+            <p>জরুরি সাহায্যের জন্য: ১৬২৬৩</p>
+        </footer>
+    </div>
+
+    <div id="notification" class="notification">
+        <p id="notification-text"></p>
+    </div>
+
+    <script>
+        // --- স্ক্রীন সুইচিং লজিক ---
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const screens = document.querySelectorAll('.screen');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetScreenId = button.getAttribute('data-screen');
+
+                // সব স্ক্রীন থেকে active-screen ক্লাস সরান
+                screens.forEach(screen => screen.classList.remove('active-screen'));
+                // সব বাটন থেকে active ক্লাস সরান
+                navButtons.forEach(btn => btn.classList.remove('active'));
+
+                // টার্গেট স্ক্রীনে active-screen ক্লাস যোগ করুন
+                document.getElementById(targetScreenId).classList.add('active-screen');
+                // ক্লিক করা বাটনে active ক্লাস যোগ করুন
+                button.classList.add('active');
+            });
+        });
+
+        // --- নোটিফিকেশন সিস্টেম ---
+        function showNotification(message, duration = 3000) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+
+        // --- ফিচার ১: মুড চেক-ইন ---
+        const moodButtons = document.querySelectorAll('.mood-btn');
+        const homeMoodDisplay = document.getElementById('home-mood-display');
+        const moodAdvice = document.getElementById('mood-advice');
+        let currentMood = localStorage.getItem('currentMood') || 'এখনও জানানো হয়নি';
+        
+        // পূর্ববর্তী মুড লোড করুন
+        homeMoodDisplay.textContent = currentMood;
+
+        moodButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currentMood = button.getAttribute('data-mood');
+                homeMoodDisplay.textContent = currentMood;
+                localStorage.setItem('currentMood', currentMood);
+                
+                // মুড অনুযায়ী পরামর্শ দিন
+                let advice = '';
+                switch(currentMood) {
+                    case 'খুব ভালো':
+                        advice = 'আপনার মুড খুব ভালো! এই অনুভূতিটি ধরে রাখতে, আপনি আজকে আপনার প্রিয় কাজটি করতে পারেন বা বন্ধুদের সাথে সময় কাটাতে পারেন।';
+                        break;
+                    case 'ভালো':
+                        advice = 'আপনার মুড ভালো থাকার জন্য, আপনি নিয়মিত ব্যায়াম করতে পারেন এবং স্বাস্থ্যকর খাবার খেতে পারেন।';
+                        break;
+                    case 'সাধারণ':
+                        advice = 'আপনার মুড উন্নত করতে, আপনি একটি ছোট হাঁটা বা আপনার পছন্দের গান শুনতে পারেন।';
+                        break;
+                    case 'খারাপ':
+                        advice = 'আপনি যদি খারাপ অনুভব করেন, গভীর শ্বাস-প্রশ্বাসের ব্যায়াম করুন বা একজন বিশ্বস্ত বন্ধুর সাথে কথা বলুন।';
+                        break;
+                    case 'খুব খারাপ':
+                        advice = 'আপনি যদি খুব খারাপ অনুভব করেন, অনুগ্রহ করে একজন মানসিক স্বাস্থ্য বিশেষজ্ঞের সাথে কথা বলুন বা আমাদের হেল্পলাইনে কল করুন।';
+                        break;
+                }
+                moodAdvice.textContent = advice;
+                
+                showNotification(আপনার মুড "${currentMood}" হিসেবে রেকর্ড করা হয়েছে। ধন্যবাদ!);
+            });
+        });
+
+        // --- ফিচার ১: স্ট্রেস লেভেল ---
+        const stressSlider = document.getElementById('stress-slider');
+        const stressValue = document.getElementById('stress-value');
+        const homeStressDisplay = document.getElementById('home-stress-display');
+        
+        // পূর্ববর্তী স্ট্রেস লেভেল লোড করুন
+        const savedStressLevel = localStorage.getItem('stressLevel');
+        if (savedStressLevel) {
+            stressSlider.value = savedStressLevel;
+            stressValue.textContent = savedStressLevel;
+            homeStressDisplay.textContent = ${savedStressLevel} / ১০;
+        }
+
+        stressSlider.addEventListener('input', () => {
+            stressValue.textContent = stressSlider.value;
+            homeStressDisplay.textContent = ${stressSlider.value} / ১০;
+            localStorage.setItem('stressLevel', stressSlider.value);
+        });
+
+        // --- ফিচার ৩: হেল্প রিকোয়েস্ট ---
+        const helpForm = document.getElementById('help-form');
+        helpForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // ফর্ম রিলোড হওয়া বন্ধ করুন
+            
+            // ফর্ম ডেটা সংরক্ষণ করুন
+            const helpRequest = helpForm.querySelector('textarea').value;
+            const helpRequests = JSON.parse(localStorage.getItem('helpRequests') || '[]');
+            helpRequests.push({
+                date: new Date().toISOString(),
+                request: helpRequest
+            });
+            localStorage.setItem('helpRequests', JSON.stringify(helpRequests));
+            
+            showNotification('আপনার সাহায্যের আবেদনটি গোপনীয়ভাবে পাঠানো হয়েছে। আমরা খুব শীঘ্রই আপনার সাথে যোগাযোগ করব।');
+            helpForm.reset();
+        });
+
+        // --- ফিচার ৬: সিম্পটম গাইড অ্যাকর্ডিয়ন ---
+        const symptomItems = document.querySelectorAll('.symptom-item');
+        symptomItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const details = item.querySelector('.symptom-details');
+                const isExpanded = item.classList.contains('expanded');
+                
+                // অন্য সব ডিটেলস বন্ধ করুন
+                document.querySelectorAll('.symptom-item').forEach(i => {
+                    i.classList.remove('expanded');
+                    i.querySelector('.symptom-details').style.display = 'none';
+                });
+                
+                // যদি এটি আগে প্রসারিত না হয়, তবে এটি প্রসারিত করুন
+                if (!isExpanded) {
+                    item.classList.add('expanded');
+                    details.style.display = 'block';
+                }
+            });
+        });
+
+        // --- ফিচার ৯: ডেটা এক্সপোর্ট ---
+        const exportBtn = document.getElementById('export-btn');
+        exportBtn.addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('.data-export-form input[type="checkbox"]:checked');
+            
+            if (checkboxes.length === 0) {
+                showNotification('অনুগ্রহ করে এক্সপোর্ট করার জন্য কমপক্ষে একটি ডেটা টাইপ নির্বাচন করুন।');
+                return;
+            }
+            
+            // CSV কন্টেন্ট তৈরি করুন
+            let csvContent = "data:text/csv;charset=utf-8,";
+            let hasData = false;
+            
+            checkboxes.forEach(checkbox => {
+                const dataType = checkbox.name;
+                
+                if (dataType === 'mood-data') {
+                    csvContent += "মুড ডেটা\n";
+                    csvContent += "তারিখ,মুড\n";
+                    csvContent += ${new Date().toLocaleDateString()},${currentMood}\n;
+                    hasData = true;
+                }
+                
+                if (dataType === 'stress-data') {
+                    csvContent += "স্ট্রেস লেভেল ডেটা\n";
+                    csvContent += "তারিখ,স্ট্রেস লেভেল\n";
+                    csvContent += ${new Date().toLocaleDateString()},${stressSlider.value}\n;
+                    hasData = true;
+                }
+                
+                if (dataType === 'help-requests') {
+                    const helpRequests = JSON.parse(localStorage.getItem('helpRequests') || '[]');
+                    if (helpRequests.length > 0) {
+                        csvContent += "সাহায্যের আবেদন ডেটা\n";
+                        csvContent += "তারিখ,আবেদন\n";
+                        helpRequests.forEach(req => {
+                            csvContent += ${new Date(req.date).toLocaleDateString()},"${req.request}"\n;
+                        });
+                        hasData = true;
+                    }
+                }
+            });
+            
+            if (hasData) {
+                // CSV ফাইল ডাউনলোড করুন
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", mental_health_data_${new Date().toISOString().split('T')[0]}.csv);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('ডেটা সফলভাবে এক্সপোর্ট করা হয়েছে।');
+            } else {
+                showNotification('এক্সপোর্ট করার জন্য কোনো ডেটা পাওয়া যায়নি।');
+            }
+        });
+
+        // --- ফিচার ১০: ভয়েস অ্যাসিস্ট্যান্ট (সিমুলেশন) ---
+        const voiceBtn = document.getElementById('voice-btn');
+        const voiceResult = document.getElementById('voice-result');
+        
+        // ভয়েস অ্যাসিস্ট্যান্টের উত্তর
+        const voiceResponses = {
+            "স্ট্রেস": "স্ট্রেস কমানোর জন্য আপনি গভীর শ্বাস-প্রশ্বাসের ব্যায়াম করতে পারেন, নিয়মিত হাঁটাহাঁটি করতে পারেন, অথবা আপনার বন্ধু বা পরিবারের সাথে কথা বলতে পারেন। আমাদের অ্যাপের 'মুড চেক-ইন' বিভাগেও কিছু টিপস রয়েছে।",
+            "অনিদ্রা": "অনিদ্রার জন্য, আপনি ঘুমানোর আগে একটি নির্দিষ্ট রুটিন অনুসরণ করতে পারেন, ক্যাফেইন এড়িয়ে চলতে পারেন, এবং ঘুমানোর আগে মোবাইল ফোন বা অন্যান্য ইলেকট্রনিক ডিভাইস ব্যবহার কমিয়ে দিতে পারেন। ধ্যান বা শ্বাস-প্রশ্বাসের ব্যায়ামও সাহায্য করতে পারে।",
+            "গর্ভাবস্থা": "গর্ভাবস্থায় মানসিক স্বাস্থ্যের যত্ন নেওয়ার জন্য, আপনি নিয়মিত চেকআপ করাতে পারেন, পরিবার এবং বন্ধুদের সাথে সময় কাটাতে পারেন, এবং প্রয়োজনে একজন মানসিক স্বাস্থ্য পেশাজীবীর সাহায্য নিতে পারেন। আমাদের 'মা ও শিশু' বিভাগে আরও তথ্য পাবেন।",
+            "ডিপ্রেশন": "ডিপ্রেশন একটি গুরুতর মানসিক স্বাস্থ্য সমস্যা। আপনি যদি ডিপ্রেশনের লক্ষণগুলি অনুভব করেন, অনুগ্রহ করে একজন মানসিক স্বাস্থ্য বিশেষজ্ঞের সাথে কথা বলুন। আমাদের হেল্পলাইনে কল করতে পারেন বা 'সাহায্য চাই' বিভাগে আপনার সমস্যা জানাতে পারেন।",
+            "উদ্বেগ": "উদ্বেগ কমানোর জন্য, আপনি ধ্যান করতে পারেন, গভীর শ্বাস-প্রশ্বাসের ব্যায়াম করতে পারেন, নিয়মিত ব্যায়াম করতে পারেন, এবং পর্যাপ্ত ঘুমাতে পারেন। যদি উদ্বেগ দীর্ঘস্থায়ী হয়, একজন মানসিক স্বাস্থ্য বিশেষজ্ঞের সাথে কথা বলুন।"
+        };
+
+        voiceBtn.addEventListener('click', () => {
+            voiceBtn.classList.add('listening');
+            voiceResult.innerHTML = '<p>শুনছি...</p>';
+
+            setTimeout(() => {
+                voiceResult.innerHTML = '<p>প্রক্রিয়াকরণ করা হচ্ছে...</p>';
+            }, 2000);
+
+            setTimeout(() => {
+                voiceBtn.classList.remove('listening');
+                
+                // এখানে একটি নমুনা উত্তর দেখানো হচ্ছে
+                const sampleQuestions = [
+                    "আমি কিভাবে আমার স্ট্রেস কমাতে পারি?",
+                    "অনিদ্রার জন্য কি করণীয়?",
+                    "গর্ভাবস্থায় মানসিক স্বাস্থ্যের যত্ন কিভাবে নেব?",
+                    "ডিপ্রেশন থেকে কিভাবে মুক্তি পাবো?",
+                    "আমার উদ্বেগ কমানোর উপায় কি?"
+                ];
+                
+                const randomQuestion = sampleQuestions[Math.floor(Math.random() * sampleQuestions.length)];
+                
+                // প্রশ্নের উত্তর খুঁজুন
+                let response = "আমি আপনার প্রশ্নটি বুঝতে পারিনি। অনুগ্রহ করে আবার চেষ্টা করুন বা আমাদের হেল্পলাইনে কল করুন।";
+                
+                for (const [key, value] of Object.entries(voiceResponses)) {
+                    if (randomQuestion.toLowerCase().includes(key.toLowerCase())) {
+                        response = value;
+                        break;
+                    }
+                }
+                
+                voiceResult.innerHTML = `
+                    <p><strong>আপনি জিজ্ঞাসা করেছেন:</strong> "${randomQuestion}"</p>
+                    <p><strong>উত্তর:</strong> ${response}</p>
+                `;
+            }, 4000);
+        });
+
+        // --- দৈনিক টিপস ---
+        const dailyTips = [
+            "প্রতিদিন কমপক্ষে ১০ মিনিট ধ্যান করুন। এটি আপনার মানসিক চাপ কমাতে সাহায্য করবে।",
+            "প্রতিদিন কমপক্ষে ৩০ মিনিট হাঁটুন। শারীরিক ব্যায়াম মানসিক স্বাস্থ্যের জন্য খুবই উপকারী।",
+            "পর্যাপ্ত পানি পান করুন। ডিহাইড্রেশন মানসিক স্বাস্থ্যের উপর নেতিবাচক প্রভাব ফেলতে পারে।",
+            "প্রতিদিন কিছু সময় আপনার পছন্দের কাজে ব্যয় করুন। এটি আপনার মেজাজ উন্নত করতে সাহায্য করবে।",
+            "পর্যাপ্ত ঘুমানোর চেষ্টা করুন। প্রাপ্তবয়স্কদের জন্য প্রতিদিন ৭-৯ ঘণ্টা ঘুম প্রয়োজন।",
+            "আপনার অনুভূতিগুলি লিখে রাখুন। জার্নালিং মানসিক স্বাস্থ্যের জন্য খুবই উপকারী।",
+            "সামাজিক যোগাযোগ বজায় রাখুন। বন্ধু ও পরিবারের সাথে সময় কাটানো মানসিক স্বাস্থ্যের জন্য গুরুত্বপূর্ণ।",
+            "ইতিবাচক চিন্তা করার অভ্যাস করুন। ইতিবাচক চিন্তা আপনার মানসিক স্বাস্থ্য উন্নত করতে সাহায্য করবে।"
+        ];
+        
+        // আজকের টিপস নির্বাচন করুন
+        const today = new Date().getDate();
+        const dailyTip = dailyTips[today % dailyTips.length];
+        document.getElementById('daily-tip').textContent = dailyTip;
+
+        // --- ইভেন্ট রেজিস্ট্রেশন ---
+        const eventButtons = document.querySelectorAll('.event-card button');
+        eventButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const eventName = button.parentElement.querySelector('h3').textContent;
+                showNotification(আপনি "${eventName}" ইভেন্টের জন্য সফলভাবে নিবন্ধিত হয়েছেন।);
+            });
+        });
+
+        // --- স্বেচ্ছাসেবক যোগাযোগ ---
+        const volunteerButtons = document.querySelectorAll('.volunteer-card button');
+        volunteerButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const volunteerName = button.parentElement.querySelector('h4').textContent;
+                showNotification(আপনি ${volunteerName}-এর সাথে যোগাযোগের জন্য একটি অনুরোধ পাঠিয়েছেন। তারা শীঘ্রই আপনার সাথে যোগাযোগ করবে।);
+            });
+        });
+
+        // --- ম্যাপ বোতাম ---
+        const mapButton = document.querySelector('#map-placeholder button');
+        if (mapButton) {
+            mapButton.addEventListener('click', () => {
+                showNotification('আপনার অবস্থান ব্যবহার করে নিকটবর্তী স্বাস্থ্যসেবা খুঁজে বের করা হচ্ছে...');
+            });
+        }
+    </script>
+</body>
+</html>
