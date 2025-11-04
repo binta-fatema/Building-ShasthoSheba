@@ -891,7 +891,7 @@
                 currentMood = button.getAttribute('data-mood');
                 homeMoodDisplay.textContent = currentMood;
                 moodAdvice.textContent = moodSuggestions[currentMood];
-                showNotification(আপনার মুড "${currentMood}" হিসেবে রেকর্ড করা হয়েছে। ধন্যবাদ!);
+                showNotification(`আপনার মুড "${currentMood}" হিসেবে রেকর্ড করা হয়েছে। ধন্যবাদ!`);
             });
         });
 
@@ -902,7 +902,7 @@
 
         stressSlider.addEventListener('input', () => {
             stressValue.textContent = stressSlider.value;
-            homeStressDisplay.textContent = ${stressSlider.value} / ১০;
+            homeStressDisplay.textContent = `${stressSlider.value} / ১০`;
         });
 
         // --- ফিচার ২: হেলথ ম্যাপ ---
@@ -1001,7 +1001,7 @@
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
             const today = new Date();
             
-            calendarMonth.textContent = ${monthNames[currentMonth]} ${currentYear};
+            calendarMonth.textContent = `${monthNames[currentMonth]} ${currentYear}`;
             calendarGrid.innerHTML = '';
             
             // দিনের নাম যোগ করুন
@@ -1080,7 +1080,7 @@
         eventRegisterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const eventName = btn.getAttribute('data-event');
-                showNotification(আপনি "${eventName}" এর জন্য সফলভাবে নিবন্ধিত হয়েছেন!);
+                showNotification(`আপনি "${eventName}" এর জন্য সফলভাবে নিবন্ধিত হয়েছেন!`);
             });
         });
 
@@ -1090,7 +1090,7 @@
             btn.addEventListener('click', () => {
                 const volunteerName = btn.getAttribute('data-volunteer');
                 const contactType = btn.classList.contains('call') ? 'কল' : 'মেসেজ';
-                showNotification(আপনি ${volunteerName}-কে ${contactType} করার জন্য অনুরোধ পাঠিয়েছেন। তারা শীঘ্রই আপনার সাথে যোগাযোগ করবে।);
+                showNotification(`আপনি ${volunteerName}-কে ${contactType} করার জন্য অনুরোধ পাঠিয়েছেন। তারা শীঘ্রই আপনার সাথে যোগাযোগ করবে।`);
             });
         });
 
